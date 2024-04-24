@@ -213,9 +213,9 @@ jobs:
         cd $GITHUB_WORKSPACE/kernel_workspace
         git clone https://github.com/TapetalArray/gki-lxc
         # Apply patches and configuration files
-        cp ./gki-lxc/gki_defconfig ./android-kernel/common/arch/arm64/configs/gki_defconfig
-        cd ./android-kernel/common
-        git apply ../../gki-lxc/*.patch
+        cp ./gki-lxc/gki_defconfig ./android-kernel/arch/arm64/configs/gki_defconfig
+        cd ./android-kernel
+        git apply ../gki-lxc/*.patch
     
     - name: Setup KernelSU
       if: env.ENABLE_KERNELSU == 'true'
