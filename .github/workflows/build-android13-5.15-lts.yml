@@ -211,9 +211,9 @@ jobs:
     - name: Setup lxc
       run: |
         cd $GITHUB_WORKSPACE/kernel_workspace
-        git clone https://github.com/lengxiaohua123/gki-lxc -b lengxiaohua123-patch-1
+        git clone https://github.com/lengxiaohua123/gki-lxc -b lengxiaohua123-patch-2
         # Apply patches and configuration files
-        cp ./gki-lxc/config ./android-kernel/arch/arm64/configs/gki_defconfig
+        cp ./gki-lxc/gki_defconfig ./android-kernel/arch/arm64/configs/gki_defconfig
         cd ./android-kernel
         git apply ../gki-lxc/*.patch
     
