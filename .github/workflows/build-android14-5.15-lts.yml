@@ -118,7 +118,7 @@ jobs:
             unzip clang.zip -d clang/
             rm -rf clang.zip
         fi
-        ls clang
+        echo "start ls clang" && ls clang
 
     - name: Download AOSP Gcc
       if: env.USE_CUSTOM_GCC_64 == 'false' || env.USE_CUSTOM_GCC_32 == 'false' && env.ENABLE_GCC == 'true' 
