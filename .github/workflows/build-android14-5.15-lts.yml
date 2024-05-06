@@ -118,7 +118,7 @@ jobs:
             unzip clang.zip -d clang/
             rm -rf clang.zip
         fi
-        echo "start ls clang" && ls clang/clang+llvm-18.1.4-x86_64-linux-gnu-ubuntu-18.04
+        echo "start ls clang" && ls clang
 
     - name: Download AOSP Gcc
       if: env.USE_CUSTOM_GCC_64 == 'false' || env.USE_CUSTOM_GCC_32 == 'false' && env.ENABLE_GCC == 'true' 
@@ -255,7 +255,7 @@ jobs:
     - name: Build kernel
       run: |
         cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
-        export PATH=$GITHUB_WORKSPACE/kernel_workspace/clang/clang+llvm-18.1.4-x86_64-linux-gnu-ubuntu-18.04/bin:$PATH
+        export PATH=$GITHUB_WORKSPACE/kernel_workspace/clang/bin:$PATH
         export KBUILD_BUILD_HOST=${{ env.BUILDER_HOST }}
         export KBUILD_BUILD_USER=$(echo ${{ github.actor }} | tr A-Z a-z)
         if [ ! -z ${{ env.KSU_EXPECTED_SIZE }} ] && [ ! -z ${{ env.KSU_EXPECTED_HASH }} ]; then
