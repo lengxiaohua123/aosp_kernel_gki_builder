@@ -10,7 +10,7 @@ AOSP_CLANG_SYSTEM=linux-x86
 AOSP_CLANG_BRANCH=main
 AOSP_CLANG_VERSION=stable
 USE_CUSTOM_CLANG=true
-CUSTOM_CLANG_SOURCE=https://github.com/llvm/llvm-project/releases/download/llvmorg-18.1.4/clang+llvm-18.1.4-x86_64-linux-gnu-ubuntu-18.04.tar.xz
+CUSTOM_CLANG_SOURCE=https://github.com/ZyCromerZ/Clang/releases/download/19.0.0git-20240506-release/Clang-19.0.0git-20240506.tar.gz
 CUSTOM_CLANG_BRANCH=
 
 ENABLE_GCC=true
