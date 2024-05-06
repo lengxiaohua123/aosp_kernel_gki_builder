@@ -104,6 +104,11 @@ jobs:
                 mkdir clang
                 tar -C clang/ -zxvf clang.tar.gz
                 rm -rf clang.tar.gz
+            elif [[ ${{ env.CUSTOM_CLANG_SOURCE }} == *'.tar.xz' ]]; then
+                wget -O clang.tar.xz ${{ env.CUSTOM_CLANG_SOURCE }}
+                mkdir clang
+                tar -C clang/ -xvf clang.tar.xz
+                rm -rf clang.tar.xz
             else
                 git clone ${{ env.CUSTOM_CLANG_SOURCE }} -b ${{ env.CUSTOM_CLANG_BRANCH }} clang --depth=1
             fi        
