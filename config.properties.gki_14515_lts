@@ -1,5 +1,5 @@
 KERNEL_SOURCE=https://github.com/lengxiaohua123/kernel_common-5.15.git
-KERNEL_SOURCE_BRANCH=android14-pure3-1483
+KERNEL_SOURCE_BRANCH=android14-pure4
 KERNEL_CONFIG=gki_defconfig
 KERNEL_IMAGE_NAME=Image
 ARCH=arm64
