@@ -1,3 +1,11 @@
-steps:
-- name: Setup Debug Session
-  uses: csexton/debugger-action@master
+name: ssh
+on:
+  workflow_dispatch:
+
+jobs:
+
+  PREBUILT_A11_5_4_LTS:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Setup Debug Session
+    uses: csexton/debugger-action@master
