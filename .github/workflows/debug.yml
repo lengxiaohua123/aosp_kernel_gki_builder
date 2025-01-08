@@ -20,8 +20,8 @@ jobs:
         cd ~/KlipperPhonesLinux/LinuxKernels/scripts
         chmod +x *.sh
         ./init.sh
-        git clone https://gitlab.com/msm8996-mainline/l
-inux.git -b v6.0.2-msm8996 --depth 1
+        git clone https://gitlab.com/msm8996-mainline/linux.git -b v6.0.2-msm8996 --depth 1
+        cp ../msm8996/.config_scropio ./linux/.config
         
     - name: Set Swap to 10GB
       uses: pierotofy/set-swap-space@master
