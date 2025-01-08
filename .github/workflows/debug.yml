@@ -8,10 +8,6 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v4
-    - name: Setup tmate session
-      uses: csexton/debugger-action@master
-
-    - uses: actions/checkout@v4
     - name: download doc
       run: |
         echo "update"
@@ -29,8 +25,13 @@ jobs:
         ./init.sh
         git clone https://gitlab.com/msm8996-mainline/linux.git -b v6.0.2-msm8996 --depth 1
         export git_path="~/work/aosp_kernel_gki_builder/aosp_kernel_gki_builder"
-        cp ~/work/aosp_kernel_gki_builder/aosp_kernel_gki_builder/.config ./linux/.config
-        ./full_compile.sh
+        cp ../msm8996/.config_gemini ./linux/.config
+        #./full_compile.sh
+        cp ./linux/.config $git_path/gemini_config
+        cd $git_path
+        git add gemini_config
+        git commit -m "add config"
+        git push
         wget https://github.com/umeiko/KlipperPhonesLinux/releases/download/base_rootfs/klipperos_base_rootfs.zip
         unzip klipperos_base_rootfs.zip
         
