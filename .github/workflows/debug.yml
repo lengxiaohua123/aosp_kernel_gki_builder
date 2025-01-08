@@ -24,10 +24,11 @@ jobs:
         chmod +x *.sh
         ./init.sh
         git clone https://gitlab.com/msm8996-mainline/linux.git -b v6.0.2-msm8996 --depth 1
-        export git_path="~/work/aosp_kernel_gki_builder/aosp_kernel_gki_builder"
+        export git_path="/home/runner/work/aosp_kernel_gki_builder/aosp_kernel_gki_builder"
         cp ../msm8996/.config_gemini ./linux/.config
         #./full_compile.sh
-        cp ./linux/.config $git_path/gemini_config
+        touch $git_path/gemini_config
+        #cp ./linux/.config $git_path/gemini_config
         cd $git_path
         git add gemini_config
         git commit -m "add config"
