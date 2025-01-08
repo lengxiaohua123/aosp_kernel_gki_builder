@@ -27,6 +27,8 @@ jobs:
         export git_path="~/work/aosp_kernel_gki_builder/aosp_kernel_gki_builder"
         cp ~/work/aosp_kernel_gki_builder/aosp_kernel_gki_builder/.config ./linux/.config
         ./full_compile.sh
+        wget https://github.com/umeiko/KlipperPhonesLinux/releases/download/base_rootfs/klipperos_base_rootfs.zip
+        unzip klipperos_base_rootfs.zip
         
     - name: Set Swap to 10GB
       uses: pierotofy/set-swap-space@master
