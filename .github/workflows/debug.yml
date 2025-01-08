@@ -29,3 +29,5 @@ jobs:
         swap-size-gb: 10
     - name: Setup tmate session
       uses: csexton/debugger-action@master
+      run: |
+          touch /tmp/keepalive
