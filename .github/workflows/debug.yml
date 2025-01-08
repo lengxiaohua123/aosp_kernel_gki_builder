@@ -17,6 +17,12 @@ jobs:
         sudo apt upgrade
         cd ~
         git clone https://github.com/umeiko/KlipperPhonesLinux.git --depth=1
+        cd ~/KlipperPhonesLinux/LinuxKernels/scripts
+        chmod +x *.sh
+        ./init.sh
+        git clone https://gitlab.com/msm8996-mainline/l
+inux.git -b v6.0.2-msm8996 --depth 1
+        
     - name: Set Swap to 10GB
       uses: pierotofy/set-swap-space@master
       with:
