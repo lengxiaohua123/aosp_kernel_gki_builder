@@ -37,7 +37,7 @@ jobs:
         mkfs.ext4 rootfs-focal.img
         mkdir ~/chroot
         sudo mount rootfs-focal.img ~/chroot
-        sudo debootstrap --arch arm64 noble ~/chroot https://mirrors.aliyun.com/ubuntu-ports
+        
         
     - name: Set Swap to 10GB
       uses: pierotofy/set-swap-space@master
