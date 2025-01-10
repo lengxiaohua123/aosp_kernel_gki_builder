@@ -41,24 +41,16 @@ jobs:
 
         sudo umount ~/chroot
         mkdir ~/out
-        tar -czvf rootfs-focal.tar.gz ~/workspaces/rootfs-focal.img
-        ls -alh rootfs-focal.tar.gz
-        mv rootfs-focal.tar.gz ~/out
+        mv rootfs-focal.img ~/out
 
-        
-    - name: Set Swap to 10GB
-      uses: pierotofy/set-swap-space@master
-      with:
-        swap-size-gb: 10
-    - name: Setup tmate session
-      uses: csexton/debugger-action@master
 
     - name: tar file
       run: |
            cd ~
            tar -czvf out.tar.gz ~/out
+           ls -alh out.tar.gz
 
-    - name: Upload KernelSU boot image
+    - name: Upload out file
       uses: actions/upload-artifact@v4.3.1
       with:
         name: out_file.tar.gz
