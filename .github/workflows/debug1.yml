@@ -38,29 +38,6 @@ mkfs.ext4 rootfs-focal.img
         mkdir ~/chroot
         sudo mount rootfs-focal.img ~/chroot
         sudo debootstrap --arch arm64 noble ~/chroot https://mirrors.aliyun.com/ubuntu-ports
-
-        cat > ./sources.list << EOF
-deb https://mirrors.aliyun.com/ubuntu-ports/ noble main restricted universe multiverse
-deb-src https://mirrors.aliyun.com/ubuntu-ports/ noble main restricted universe multiverse
-
-deb https://mirrors.aliyun.com/ubuntu-ports/ noble-security main restricted universe multiverse
-deb-src https://mirrors.aliyun.com/ubuntu-ports/ noble-security main restricted universe multiverse
-
-deb https://mirrors.aliyun.com/ubuntu-ports/ noble-updates main restricted universe multiverse
-deb-src https://mirrors.aliyun.com/ubuntu-ports/ noble-updates main restricted universe multiverse
-
-# deb https://mirrors.aliyun.com/ubuntu-ports/ noble-proposed main restricted universe multiverse
-# deb-src https://mirrors.aliyun.com/ubuntu-ports/ noble-proposed main restricted universe multiverse
-
-deb https://mirrors.aliyun.com/ubuntu-ports/ noble-backports main restricted universe multiverse
-deb-src https://mirrors.aliyun.com/ubuntu-ports/ noble-backports main restricted universe multiverse
-EOF
-        
-        sudo mount --bind /proc ~/chroot/proc
-        sudo mount --bind /dev ~/chroot/dev
-        sudo mount --bind /dev/pts ~/chroot/dev/pts
-        sudo mount --bind /sys ~/chroot/sys
-
         
     - name: Set Swap to 10GB
       uses: pierotofy/set-swap-space@master
