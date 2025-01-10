@@ -1,4 +1,4 @@
-name: ssh1
+name: extra_ssh
 on:
   workflow_dispatch:
 
