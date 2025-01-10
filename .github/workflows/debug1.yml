@@ -80,11 +80,12 @@ jobs:
         passwd hol
         #安装一些包
         apt install man man-db bash-completion vim tmux network-manager chrony openssh-server initramfs-tools --no-install-recommends -y
+        mkdir /tmp
         exit
 
         cd ~/workspaces
+
         cp ~/workspaces/linux*.deb ~/chroot/tmp
-        cp -r ~/KlipperPhonesLinux/LinuxKernels/msm8996/firmware/* ~/chroot/usr/lib/firmware/
 
         sudo chroot ~/chroot
         cd /tmp
@@ -96,8 +97,29 @@ jobs:
         dpkg --get-selections | grep linux
         
         ls /lib/modules
+        exit
+
+        cp -r ~/KlipperPhonesLinux/LinuxKernels/msm8996/firmware/* ~/chroot/usr/lib/firmware/
+        
+        sudo chroot ~/chroot
         cd /usr/lib/firmware/
         ldconfig
+
+        cat > /etc/systemd/system/resizefs.service << 'EOF'
+        [Unit]
+        Description=Expand root filesystem to fill partition
+        After=local-fs.target
+        
+        [Service]
+        Type=oneshot
+        ExecStart=/usr/bin/bash -c 'exec /usr/sbin/resize2fs $(findmnt -nvo SOURCE /)'
+        ExecStartPost=/usr/bin/systemctl disable resizefs.service
+        RemainAfterExit=true
+        
+        [Install]
+        WantedBy=default.target
+        EOF
+        systemctl enable resizefs.service
 
         cat > /etc/systemd/system/serial-getty@ttyGS0.service << EOF
         [Unit]
@@ -119,6 +141,16 @@ jobs:
         rm -f /tmp/*
         history -c
         exit
+
+        mkdir ~/workspaces/tmp_mkboot
+        rm -rf ~/workspaces/tmp_mkboot/*
+        cp ~/workspaces/*.dtb ~/workspaces/tmp_mkboot/
+        cp ~/workspaces/Image.gz ~/workspaces/tmp_mkboot/
+        cp ~/chroot/boot/initrd* ~/workspaces/tmp_mkboot/
+        
+        cp ~/workspaces/tmp_mkboot/initrd* ~/workspaces/tmp_mkboot/initrd.img
+        cp ~/workspaces/tmp_mkboot/*.dtb ~/workspaces/tmp_mkboot/dtb
+        cat ~/workspaces/tmp_mkboot/Image.gz ~/workspaces/tmp_mkboot/dtb > ~/workspaces/tmp_mkboot/kernel-dtb
         
     - name: Set Swap to 10GB
       uses: pierotofy/set-swap-space@master
