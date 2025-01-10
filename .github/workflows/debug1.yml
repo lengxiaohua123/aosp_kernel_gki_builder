@@ -28,7 +28,7 @@ jobs:
         ./init.sh
         export git_path=~/work/aosp_kernel_gki_builder/aosp_kernel_gki_builder
         echo "export git_path=~/work/aosp_kernel_gki_builder/aosp_kernel_gki_builder" >> ~/.bashrc
-        source ~/.bashrc
+
         mkdir -p ~/workspaces
         cd $git_path
         cp linux* *.dtb Image.gz ~/workspaces
