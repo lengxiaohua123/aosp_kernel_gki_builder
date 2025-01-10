@@ -16,7 +16,7 @@ jobs:
         sudo apt list --upgradable
         sudo apt upgrade
         #这里宿主机使用Ubuntu20.04系统
-sudo apt install binfmt-support qemu-user-static gcc-10-aarch64-linux-gnu kernel-package fakeroot simg2img img2simg mkbootimg bison flex gcc-aarch64-linux-gnu pkg-config libncurses-dev libssl-dev unzip git debootstrap
+        sudo apt install binfmt-support qemu-user-static gcc-10-aarch64-linux-gnu kernel-package fakeroot simg2img img2simg mkbootimg bison flex gcc-aarch64-linux-gnu pkg-config libncurses-dev libssl-dev unzip git debootstrap
 
         touch /tmp/keepalive
         cd ~
