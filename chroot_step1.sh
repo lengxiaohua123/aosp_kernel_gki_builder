@@ -1,6 +1,5 @@
 #!/bin/bash
 
-sudo chroot ~/chroot
 #以下命令即都是在chroot环境中
 #修改阿里源
 cat > /etc/apt/sources.list << EOF
