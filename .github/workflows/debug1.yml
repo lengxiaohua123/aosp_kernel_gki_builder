@@ -84,7 +84,7 @@ jobs:
 
         cd ~/workspaces
         cp ~/workspaces/linux*.deb ~/chroot/tmp
-        cp -r ~/LinuxKernels/msm8996/firmware/* ~/chroot/usr/lib/firmware/
+        cp -r ~/KlipperPhonesLinux/LinuxKernels/msm8996/firmware/* ~/chroot/usr/lib/firmware/
 
         sudo chroot ~/chroot
         cd /tmp
