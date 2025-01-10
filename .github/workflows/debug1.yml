@@ -37,7 +37,88 @@ jobs:
         mkfs.ext4 rootfs-focal.img
         mkdir ~/chroot
         sudo mount rootfs-focal.img ~/chroot
+        sudo debootstrap --arch arm64 jammy ~/chroot https://mirrors.aliyun.com/ubuntu-ports
+
+        sudo mount --bind /proc ~/chroot/proc
+        sudo mount --bind /dev ~/chroot/dev
+        sudo mount --bind /dev/pts ~/chroot/dev/pts
+        sudo mount --bind /sys ~/chroot/sys
+
+        sudo chroot ~/chroot
+        cat > /etc/apt/sources.list << EOF
+        deb https://mirrors.aliyun.com/ubuntu-ports/ jammy main restricted universe multiverse
+        deb-src https://mirrors.aliyun.com/ubuntu-ports/ jammy main restricted universe multiverse
         
+        deb https://mirrors.aliyun.com/ubuntu-ports/ jammy-security main restricted universe multiverse
+        deb-src https://mirrors.aliyun.com/ubuntu-ports/ jammy-security main restricted universe multiverse
+        
+        deb https://mirrors.aliyun.com/ubuntu-ports/ jammy-updates main restricted universe multiverse
+        deb-src https://mirrors.aliyun.com/ubuntu-ports/ jammy-updates main restricted universe multiverse
+        
+        # deb https://mirrors.aliyun.com/ubuntu-ports/ jammy-proposed main restricted universe multiverse
+        # deb-src https://mirrors.aliyun.com/ubuntu-ports/ jammy-proposed main restricted universe multiverse
+        
+        deb https://mirrors.aliyun.com/ubuntu-ports/ jammy-backports main restricted universe multiverse
+        deb-src https://mirrors.aliyun.com/ubuntu-ports/ jammy-backports main restricted universe multiverse
+        EOF
+        
+        apt update && apt upgrade
+        #设置locales
+        locale-gen en_US.UTF-8
+        locale-gen zh_CN.UTF-8
+        #设置中国时区
+        rm /etc/localtime
+        ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+        #设置hostname
+        echo 'xiaomi-gemini' > /etc/hostname
+        #卸载netplan
+        apt purge netplan.io
+        #创建用户
+        useradd -m -s /bin/bash hol
+        usermod -aG sudo hol
+        #设置密码
+        passwd hol
+        #安装一些包
+        apt install man man-db bash-completion vim tmux network-manager chrony openssh-server initramfs-tools --no-install-recommends -y
+        exit
+
+        cd ~/workspaces
+        cp ~/workspaces/linux*.deb ~/chroot/tmp
+        cp -r ~/LinuxKernels/msm8996/firmware/* ~/chroot/usr/lib/firmware/
+
+        sudo chroot ~/chroot
+        cd /tmp
+        dpkg --get-selections | grep linux
+        dpkg -l | grep -E "linux-headers|linux-image" |awk '{print $2}'|xargs dpkg -P
+        rm -rf /lib/modules/*
+        
+        dpkg -i linux*.deb
+        dpkg --get-selections | grep linux
+        
+        ls /lib/modules
+        cd /usr/lib/firmware/
+        ldconfig
+
+        cat > /etc/systemd/system/serial-getty@ttyGS0.service << EOF
+        [Unit]
+        Description=Serial Console Service on ttyGS0
+        
+        [Service]
+        ExecStart=-/usr/sbin/agetty -L 115200 ttyGS0 xterm+256color
+        Type=idle
+        Restart=always
+        RestartSec=0
+        
+        [Install]
+        WantedBy=multi-user.target
+        EOF
+        systemctl enable serial-getty@ttyGS0.service
+        #如果串口登录失效，可能是g_serial模块没有加载
+        echo g_serial >> /etc/modules
+        apt clean
+        rm -f /tmp/*
+        history -c
+        exit
         
     - name: Set Swap to 10GB
       uses: pierotofy/set-swap-space@master
