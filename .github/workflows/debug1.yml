@@ -19,6 +19,7 @@ jobs:
         sudo apt install binfmt-support qemu-user-static gcc-10-aarch64-linux-gnu kernel-package fakeroot simg2img img2simg mkbootimg bison flex gcc-aarch64-linux-gnu pkg-config libncurses-dev libssl-dev unzip git debootstrap
 
         touch /tmp/keepalive
+        mkdir ~/out
         cd ~
         git config --global user.email "991350086@qq.com"
         git config --global user.name "lengxiaohua"
@@ -39,108 +40,24 @@ jobs:
         sudo mount rootfs-focal.img ~/chroot
         sudo debootstrap --arch arm64 jammy ~/chroot https://mirrors.aliyun.com/ubuntu-ports
 
+        cp $git_pash/*.sh ~/chroot/root/
+
         sudo mount --bind /proc ~/chroot/proc
         sudo mount --bind /dev ~/chroot/dev
         sudo mount --bind /dev/pts ~/chroot/dev/pts
         sudo mount --bind /sys ~/chroot/sys
 
-        sudo chroot ~/chroot
-        cat > /etc/apt/sources.list << EOF
-        deb https://mirrors.aliyun.com/ubuntu-ports/ jammy main restricted universe multiverse
-        deb-src https://mirrors.aliyun.com/ubuntu-ports/ jammy main restricted universe multiverse
-        
-        deb https://mirrors.aliyun.com/ubuntu-ports/ jammy-security main restricted universe multiverse
-        deb-src https://mirrors.aliyun.com/ubuntu-ports/ jammy-security main restricted universe multiverse
-        
-        deb https://mirrors.aliyun.com/ubuntu-ports/ jammy-updates main restricted universe multiverse
-        deb-src https://mirrors.aliyun.com/ubuntu-ports/ jammy-updates main restricted universe multiverse
-        
-        # deb https://mirrors.aliyun.com/ubuntu-ports/ jammy-proposed main restricted universe multiverse
-        # deb-src https://mirrors.aliyun.com/ubuntu-ports/ jammy-proposed main restricted universe multiverse
-        
-        deb https://mirrors.aliyun.com/ubuntu-ports/ jammy-backports main restricted universe multiverse
-        deb-src https://mirrors.aliyun.com/ubuntu-ports/ jammy-backports main restricted universe multiverse
-        EOF
-        
-        apt update && apt upgrade
-        #设置locales
-        locale-gen en_US.UTF-8
-        locale-gen zh_CN.UTF-8
-        #设置中国时区
-        rm /etc/localtime
-        ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-        #设置hostname
-        echo 'xiaomi-gemini' > /etc/hostname
-        #卸载netplan
-        apt purge netplan.io
-        #创建用户
-        useradd -m -s /bin/bash hol
-        usermod -aG sudo hol
-        #设置密码
-        passwd hol
-        #安装一些包
-        apt install man man-db bash-completion vim tmux network-manager chrony openssh-server initramfs-tools --no-install-recommends -y
-        mkdir /tmp
-        exit
+        sudo chroot ~/chroot /bin/bash -c "chmod +x /root/*.sh; /root/chroot_step1.sh"
 
         cd ~/workspaces
 
         cp ~/workspaces/linux*.deb ~/chroot/tmp
 
-        sudo chroot ~/chroot
-        cd /tmp
-        dpkg --get-selections | grep linux
-        dpkg -l | grep -E "linux-headers|linux-image" |awk '{print $2}'|xargs dpkg -P
-        rm -rf /lib/modules/*
-        
-        dpkg -i linux*.deb
-        dpkg --get-selections | grep linux
-        
-        ls /lib/modules
-        exit
+        sudo chroot ~/chroot /bin/bash -c "chmod +x /root/*.sh; /root/chroot_step2.sh"
 
         cp -r ~/KlipperPhonesLinux/LinuxKernels/msm8996/firmware/* ~/chroot/usr/lib/firmware/
         
-        sudo chroot ~/chroot
-        cd /usr/lib/firmware/
-        ldconfig
-
-        cat > /etc/systemd/system/resizefs.service << 'EOF'
-        [Unit]
-        Description=Expand root filesystem to fill partition
-        After=local-fs.target
-        
-        [Service]
-        Type=oneshot
-        ExecStart=/usr/bin/bash -c 'exec /usr/sbin/resize2fs $(findmnt -nvo SOURCE /)'
-        ExecStartPost=/usr/bin/systemctl disable resizefs.service
-        RemainAfterExit=true
-        
-        [Install]
-        WantedBy=default.target
-        EOF
-        systemctl enable resizefs.service
-
-        cat > /etc/systemd/system/serial-getty@ttyGS0.service << EOF
-        [Unit]
-        Description=Serial Console Service on ttyGS0
-        
-        [Service]
-        ExecStart=-/usr/sbin/agetty -L 115200 ttyGS0 xterm+256color
-        Type=idle
-        Restart=always
-        RestartSec=0
-        
-        [Install]
-        WantedBy=multi-user.target
-        EOF
-        systemctl enable serial-getty@ttyGS0.service
-        #如果串口登录失效，可能是g_serial模块没有加载
-        echo g_serial >> /etc/modules
-        apt clean
-        rm -f /tmp/*
-        history -c
-        exit
+       sudo chroot ~/chroot /bin/bash -c "chmod +x /root/*.sh; /root/chroot_step3.sh"
 
         mkdir ~/workspaces/tmp_mkboot
         rm -rf ~/workspaces/tmp_mkboot/*
@@ -162,9 +79,9 @@ jobs:
     - name: tar file
       run: |
            cd
-           tar -czvf out.tar.gz ~/workspaces
+           tar -czvf out.tar.gz ~/out
 
-    - name: Upload KernelSU boot image
+    - name: Upload out
       uses: actions/upload-artifact@v4.3.1
       with:
         name: out_file.tar.gz
