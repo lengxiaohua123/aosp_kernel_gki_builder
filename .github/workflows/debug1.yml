@@ -33,8 +33,8 @@ jobs:
         cd $git_path
         cp linux* *.dtb Image.gz ~/workspaces
         cd ~/workspaces
-dd if=/dev/zero of=rootfs-focal.img bs=1G count=2
-mkfs.ext4 rootfs-focal.img
+        dd if=/dev/zero of=rootfs-focal.img bs=1G count=2
+        mkfs.ext4 rootfs-focal.img
         mkdir ~/chroot
         sudo mount rootfs-focal.img ~/chroot
         sudo debootstrap --arch arm64 noble ~/chroot https://mirrors.aliyun.com/ubuntu-ports
