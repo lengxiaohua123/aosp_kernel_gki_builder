@@ -40,7 +40,7 @@ jobs:
         sudo mount rootfs-focal.img ~/chroot
         sudo debootstrap --arch arm64 jammy ~/chroot https://mirrors.aliyun.com/ubuntu-ports
 
-        cp $git_pash/*.sh ~/chroot/root/
+        cp $git_path/*.sh ~/chroot/root/
 
         sudo mount --bind /proc ~/chroot/proc
         sudo mount --bind /dev ~/chroot/dev
