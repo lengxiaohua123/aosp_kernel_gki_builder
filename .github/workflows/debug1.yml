@@ -57,7 +57,7 @@ jobs:
 
         cp -r ~/KlipperPhonesLinux/LinuxKernels/msm8996/firmware/* ~/chroot/usr/lib/firmware/
         
-       sudo chroot ~/chroot /bin/bash -c "chmod +x /root/*.sh; /root/chroot_step3.sh"
+        sudo chroot ~/chroot /bin/bash -c "chmod +x /root/*.sh; /root/chroot_step3.sh"
 
         mkdir ~/workspaces/tmp_mkboot
         rm -rf ~/workspaces/tmp_mkboot/*
