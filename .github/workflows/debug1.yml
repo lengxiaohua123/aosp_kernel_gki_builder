@@ -40,7 +40,7 @@ jobs:
         sudo mount rootfs-focal.img ~/chroot
         sudo debootstrap --arch arm64 jammy ~/chroot https://mirrors.aliyun.com/ubuntu-ports
 
-        cp $git_path/*.sh ~/chroot/root/
+        sudo cp $git_path/*.sh ~/chroot/root/
 
         sudo mount --bind /proc ~/chroot/proc
         sudo mount --bind /dev ~/chroot/dev
@@ -51,11 +51,11 @@ jobs:
 
         cd ~/workspaces
 
-        cp ~/workspaces/linux*.deb ~/chroot/tmp
+        sudo cp ~/workspaces/linux*.deb ~/chroot/tmp
 
         sudo chroot ~/chroot /bin/bash -c "chmod +x /root/*.sh; /root/chroot_step2.sh"
 
-        cp -r ~/KlipperPhonesLinux/LinuxKernels/msm8996/firmware/* ~/chroot/usr/lib/firmware/
+        sudo cp -r ~/KlipperPhonesLinux/LinuxKernels/msm8996/firmware/* ~/chroot/usr/lib/firmware/
         
         sudo chroot ~/chroot /bin/bash -c "chmod +x /root/*.sh; /root/chroot_step3.sh"
 
@@ -63,7 +63,7 @@ jobs:
         rm -rf ~/workspaces/tmp_mkboot/*
         cp ~/workspaces/*.dtb ~/workspaces/tmp_mkboot/
         cp ~/workspaces/Image.gz ~/workspaces/tmp_mkboot/
-        cp ~/chroot/boot/initrd* ~/workspaces/tmp_mkboot/
+        sudo cp ~/chroot/boot/initrd* ~/workspaces/tmp_mkboot/
         
         cp ~/workspaces/tmp_mkboot/initrd* ~/workspaces/tmp_mkboot/initrd.img
         cp ~/workspaces/tmp_mkboot/*.dtb ~/workspaces/tmp_mkboot/dtb
