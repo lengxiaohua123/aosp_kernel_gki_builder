@@ -1,0 +1,33 @@
+name: ssh
+on:
+  workflow_dispatch:
+
+jobs:
+
+  start_ssh:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v4
+    - name: download doc
+      run: |
+        echo "update"
+        sudo apt update
+        sudo apt install -y git ccache automake flex lzop bison gperf build-essential zip curl zlib1g-dev g++-multilib libxml2-utils bzip2 libbz2-dev libbz2-1.0 libghc-bzlib-dev squashfs-tools pngcrush schedtool dpkg-dev liblz4-tool make optipng maven libssl-dev pwgen libswitch-perl policycoreutils minicom libxml-sax-base-perl libxml-simple-perl bc libc6-dev-i386 lib32ncurses5-dev libx11-dev lib32z-dev libgl1-mesa-dev xsltproc unzip device-tree-compiler python2 rename libelf-dev dwarves
+        sudo apt list --upgradable
+        sudo apt upgrade
+        touch /tmp/keepalive
+        cd ~
+        git config --global user.email "991350086@qq.com"
+        git config --global user.name "lengxiaohua"
+        git clone https://github.com/umeiko/KlipperPhonesLinux.git --depth=1
+        cd ~/KlipperPhonesLinux/LinuxKernels/scripts
+        chmod +x *.sh
+        ./init.sh
+        echo "export git_path=~/work/aosp_kernel_gki_builder/aosp_kernel_gki_builder" >> ~/.bashrc
+        
+    - name: Set Swap to 10GB
+      uses: pierotofy/set-swap-space@master
+      with:
+        swap-size-gb: 10
+    - name: Setup tmate session
+      uses: csexton/debugger-action@master
