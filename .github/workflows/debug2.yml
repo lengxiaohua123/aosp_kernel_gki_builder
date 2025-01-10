@@ -39,6 +39,11 @@ jobs:
         sudo mount rootfs-focal.img ~/chroot
         sudo debootstrap --arch arm64 jammy ~/chroot https://mirrors.aliyun.com/ubuntu-ports
 
+        sudo chroot ~/chroot
+        ls ~ -lah
+        ls -alh /
+        exit
+
         sudo umount ~/chroot
         mkdir ~/out
         mv rootfs-focal.img ~/out
