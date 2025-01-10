@@ -1,0 +1,66 @@
+name: extra_ssh
+on:
+  workflow_dispatch:
+
+jobs:
+
+  start_ssh:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v4
+    - name: download doc
+      run: |
+        echo "update"
+        sudo apt update
+        sudo apt install -y git ccache automake flex lzop bison gperf build-essential zip curl zlib1g-dev g++-multilib libxml2-utils bzip2 libbz2-dev libbz2-1.0 libghc-bzlib-dev squashfs-tools pngcrush schedtool dpkg-dev liblz4-tool make optipng maven libssl-dev pwgen libswitch-perl policycoreutils minicom libxml-sax-base-perl libxml-simple-perl bc libc6-dev-i386 lib32ncurses5-dev libx11-dev lib32z-dev libgl1-mesa-dev xsltproc unzip device-tree-compiler python2 rename libelf-dev dwarves
+        sudo apt list --upgradable
+        sudo apt upgrade
+        #这里宿主机使用Ubuntu20.04系统
+        sudo apt install binfmt-support qemu-user-static gcc-10-aarch64-linux-gnu kernel-package fakeroot simg2img img2simg mkbootimg bison flex gcc-aarch64-linux-gnu pkg-config libncurses-dev libssl-dev unzip git debootstrap
+
+        touch /tmp/keepalive
+        cd ~
+        git config --global user.email "991350086@qq.com"
+        git config --global user.name "lengxiaohua"
+        git clone https://github.com/umeiko/KlipperPhonesLinux.git --depth=1
+        cd ~/KlipperPhonesLinux/LinuxKernels/scripts
+        chmod +x *.sh
+        ./init.sh
+        export git_path=~/work/aosp_kernel_gki_builder/aosp_kernel_gki_builder
+        echo "export git_path=~/work/aosp_kernel_gki_builder/aosp_kernel_gki_builder" >> ~/.bashrc
+
+        mkdir -p ~/workspaces
+        cd $git_path
+        cp linux* *.dtb Image.gz ~/workspaces
+        cd ~/workspaces
+        dd if=/dev/zero of=rootfs-focal.img bs=1G count=2
+        mkfs.ext4 rootfs-focal.img
+        mkdir ~/chroot
+        sudo mount rootfs-focal.img ~/chroot
+        sudo debootstrap --arch arm64 jammy ~/chroot https://mirrors.aliyun.com/ubuntu-ports
+
+        sudo umount ~/chroot
+        mkdir ~/out
+        tar -czvf rootfs-focal.tar.gz ~/workspaces/rootfs-focal.img
+        ls -alh rootfs-focal.tar.gz
+        mv rootfs-focal.tar.gz ~/out
+
+        
+    - name: Set Swap to 10GB
+      uses: pierotofy/set-swap-space@master
+      with:
+        swap-size-gb: 10
+    - name: Setup tmate session
+      uses: csexton/debugger-action@master
+
+    - name: tar file
+      run: |
+           cd ~
+           tar -czvf out.tar.gz ~/out
+
+    - name: Upload KernelSU boot image
+      uses: actions/upload-artifact@v4.3.1
+      with:
+        name: out_file.tar.gz
+        path: ~/out.tar.gz
+        if-no-files-found: error
