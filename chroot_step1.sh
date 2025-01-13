@@ -19,7 +19,7 @@ deb https://mirrors.aliyun.com/ubuntu-ports/ jammy-backports main restricted uni
 deb-src https://mirrors.aliyun.com/ubuntu-ports/ jammy-backports main restricted universe multiverse
 EOF
 #更新源
-apt update && apt upgrade
+apt update && apt upgrade -y
 #设置locales
 locale-gen en_US.UTF-8
 locale-gen zh_CN.UTF-8
