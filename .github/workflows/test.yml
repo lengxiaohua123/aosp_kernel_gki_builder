@@ -1,0 +1,27 @@
+name: ssh_test
+on:
+  workflow_dispatch:
+
+jobs:
+
+  start_ssh:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v4
+    - name: download doc
+      run: |
+        echo "update"
+        sudo apt update
+        sudo apt list --upgradable
+        sudo apt upgrade -y
+        touch /tmp/keepalive
+        cd ~
+        dd if=/dev/zero of=rootfs-focal.img bs=1G count=2
+        mkfs.ext4 rootfs-focal.img
+        
+    - name: Set Swap to 10GB
+      uses: pierotofy/set-swap-space@master
+      with:
+        swap-size-gb: 10
+    - name: Setup tmate session
+      uses: csexton/debugger-action@master
