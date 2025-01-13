@@ -14,9 +14,9 @@ jobs:
         sudo apt update
         sudo apt install -y git ccache automake flex lzop bison gperf build-essential zip curl zlib1g-dev g++-multilib libxml2-utils bzip2 libbz2-dev libbz2-1.0 libghc-bzlib-dev squashfs-tools pngcrush schedtool dpkg-dev liblz4-tool make optipng maven libssl-dev pwgen libswitch-perl policycoreutils minicom libxml-sax-base-perl libxml-simple-perl bc libc6-dev-i386 lib32ncurses5-dev libx11-dev lib32z-dev libgl1-mesa-dev xsltproc unzip device-tree-compiler python2 rename libelf-dev dwarves
         sudo apt list --upgradable
-        sudo apt upgrade
+        sudo apt upgrade -y
         #这里宿主机使用Ubuntu20.04系统
-        sudo apt install binfmt-support qemu-user-static gcc-10-aarch64-linux-gnu kernel-package fakeroot simg2img img2simg mkbootimg bison flex gcc-aarch64-linux-gnu pkg-config libncurses-dev libssl-dev unzip git debootstrap
+        sudo apt install binfmt-support qemu-user-static gcc-10-aarch64-linux-gnu kernel-package fakeroot simg2img img2simg mkbootimg bison flex gcc-aarch64-linux-gnu pkg-config libncurses-dev libssl-dev unzip git debootstrap -y
 
         touch /tmp/keepalive
         mkdir ~/out
@@ -70,7 +70,27 @@ jobs:
         cp ~/workspaces/tmp_mkboot/initrd* ~/workspaces/tmp_mkboot/initrd.img
         cp ~/workspaces/tmp_mkboot/*.dtb ~/workspaces/tmp_mkboot/dtb
         cat ~/workspaces/tmp_mkboot/Image.gz ~/workspaces/tmp_mkboot/dtb > ~/workspaces/tmp_mkboot/kernel-dtb
-        
+        uuid=$(file ~/workspaces/rootfs-focal.img | grep -oP '(?<=UUID=)[^ ]*')
+        echo $uuid
+        mkbootimg --base 0x80000000 \
+                  --kernel_offset 0x00008000 \
+                  --ramdisk_offset 0x01000000 \
+                  --tags_offset 0x00000100 \
+                  --pagesize 2048 \
+                  --second_offset 0x00f00000 \
+                  --ramdisk ~/workspaces/tmp_mkboot/initrd.img \
+                  --cmdline "console=tty0 root=UUID=$uuid rw loglevel=3 splash"\
+                  --kernel ~/workspaces/tmp_mkboot/kernel-dtb -o ~/workspaces/tmp_mkboot/boot.img
+        sudo umount ~/chroot/proc
+        sudo umount ~/chroot/dev/pts
+        sudo umount ~/chroot/dev
+        sudo umount ~/chroot/sys
+        sudo umount ~/chroot
+        img2simg ~/workspaces/rootfs-focal.img ~/workspaces/tmp_mkboot/rootfs.img
+        cp ~/workspaces/tmp_mkboot/boot.img ~/out/boot.img
+        cp ~/workspaces/tmp_mkboot/rootfs.img ~/out/rootfs.img
+
+
     - name: Set Swap to 10GB
       uses: pierotofy/set-swap-space@master
       with:
