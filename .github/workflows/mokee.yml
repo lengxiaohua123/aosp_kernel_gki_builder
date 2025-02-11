@@ -81,15 +81,16 @@ jobs:
            repo init -u https://github.com/MoKee/android.git -b mkq-mr1 --depth=1
            repo sync --current-branch --force-sync --no-clone-bundle --no-tags --optimized-fetch --prune -j$(nproc --all)
 
-    - name: build source
-      run: |
-           cd /home/runner/work/aosp_kernel_gki_builder/aosp_kernel_gki_builder/mokee
-
            git clone https://github.com/MoKee/android_device_meizu_m1971.git -b mkq-mr1 device/meizu/m1971
            git clone https://github.com/MoKee/android_device_meizu_sm8150-common.git -b mkq-mr1 device/meizu/sm8150-common
            git clone https://github.com/mokee/android_vendor_meizu_m1971.git -b mkq-mr1 vendor/meizu/m1971
            git clone https://github.com/mokee/android_vendor_meizu_sm8150-common.git -b mkq-mr1 vendor/meizu/sm8150-common
            git clone --depth=1 https://github.com/mokee/android_kernel_meizu_sm8150.git -b mkq-mr1 kernel/meizu/sm8150
+
+    - name: build source
+      run: |
+           cd /home/runner/work/aosp_kernel_gki_builder/aosp_kernel_gki_builder/mokee
+
            source build/envsetup.sh
            lunch mokee_m1971-userdebug
            mka bacon
