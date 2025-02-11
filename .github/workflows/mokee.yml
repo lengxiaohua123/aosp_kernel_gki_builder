@@ -79,10 +79,10 @@ jobs:
         swap-size-gb: 8
 
     - name: download source
-      working-directory: ./
       run: |
-           mkdir ./mokee
-           cd ./mokee
+           cd /home/runner/work/aosp_kernel_gki_builder/aosp_kernel_gki_builder
+           mkdir mokee
+           cd mokee
            repo init -u https://github.com/MoKee/android.git -b mkq-mr1 --depth=1
            repo sync --current-branch --force-sync --no-clone-bundle --no-tags --optimized-fetch --prune -j$(nproc --all)
 
