@@ -95,17 +95,14 @@ jobs:
            lunch mokee_m1971-userdebug
            mka bacon
 
-    - name: Setup tmate session
-      uses: csexton/debugger-action@master
-
     - name: tar file
       run: |
-           cd
-           tar -czvf out.tar.gz ~/out
+           cd /home/runner/work/aosp_kernel_gki_builder/aosp_kernel_gki_builder/mokee/out/target/product/m1971/
+           mv MK100*.zip MK100.zip
 
     - name: Upload out
       uses: actions/upload-artifact@v4.3.1
       with:
-        name: out_file.tar.gz
-        path: ~/out.tar.gz
+        name: out_file.zip
+        path: /home/runner/work/aosp_kernel_gki_builder/aosp_kernel_gki_builder/mokee/out/target/product/m1971/MK100.zip
         if-no-files-found: error
