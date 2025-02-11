@@ -1,1 +1,49 @@
-11
+name: build mokee
+on:
+  workflow_dispatch:
+
+jobs:
+
+  env_conf:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v4
+    - name: env conf
+      run: |
+           echo "update"
+           sudo apt update
+           sudo apt upgrade -y
+           sudo apt install -y git ccache automake flex lzop bison gperf build-essential zip curl zlib1g-dev g++-multilib libxml2-utils bzip2 libbz2-dev libbz2-1.0 libghc-bzlib-dev squashfs-tools pngcrush schedtool dpkg-dev liblz4-tool make optipng maven libssl-dev pwgen libswitch-perl policycoreutils minicom libxml-sax-base-perl libxml-simple-perl bc libc6-dev-i386 lib32ncurses5-dev libx11-dev lib32z-dev libgl1-mesa-dev xsltproc unzip device-tree-compiler python2 rename libelf-dev dwarves
+           sudo apt install binfmt-support qemu-user-static gcc-10-aarch64-linux-gnu kernel-package fakeroot simg2img img2simg mkbootimg bison flex gcc-aarch64-linux-gnu pkg-config libncurses-dev libssl-dev unzip git debootstrap -y
+           sudo apt-get update && sudo apt-get install bc bison build-essential ccache curl flex g++-multilib gcc-multilib git gnupg gperf imagemagick lib32ncurses5-dev lib32readline-dev lib32z1-dev liblz4-tool libncurses5 libncurses5-dev libsdl1.2-dev libssl-dev libxml2 libxml2-utils lzop pngcrush rsync schedtool squashfs-tools xsltproc zip zlib1g-dev libwxgtk3.0-dev
+           mkdir ~/out
+           cd ~
+           git config --global user.email "991350086@qq.com"
+           git config --global user.name "lengxiaohua"
+           mkdir -p ~/bin
+           curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+           sudo cp ~/bin/repo /bin/repo
+           sudo chmod a+x /bin/repo
+
+    - name: download source
+      run: |
+           cd
+           tar -czvf out.tar.gz ~/out
+
+
+    - name: Set Swap to 10GB
+      uses: pierotofy/set-swap-space@master
+      with:
+        swap-size-gb: 10
+   
+    - name: tar file
+      run: |
+           cd
+           tar -czvf out.tar.gz ~/out
+
+    - name: Upload out
+      uses: actions/upload-artifact@v4.3.1
+      with:
+        name: out_file.tar.gz
+        path: ~/out.tar.gz
+        if-no-files-found: error
