@@ -31,6 +31,9 @@ jobs:
       with:
         swap-size-gb: 8
 
+    - name: Free disk space
+      run: curl -fsSL https://raw.githubusercontent.com/kou/arrow/e49d8ae15583ceff03237571569099a6ad62be32/ci/scripts/util_free_space.sh | bash
+
     - name: download source
       run: |
            mkdir ~/mokee
