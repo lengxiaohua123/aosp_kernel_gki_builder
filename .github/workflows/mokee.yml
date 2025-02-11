@@ -95,6 +95,9 @@ jobs:
            lunch mokee_m1971-userdebug
            mka bacon
 
+    - name: Setup tmate session
+      uses: csexton/debugger-action@master
+
     - name: tar file
       run: |
            cd
