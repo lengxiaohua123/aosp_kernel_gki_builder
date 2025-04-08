@@ -208,7 +208,14 @@ jobs:
             echo "HAVE_KERNELSU_SOURCE_BOOT_IMAGE=true" >> $GITHUB_ENV
             echo "SOURCE_KERNELSU_BOOTIMG_PATH=$GITHUB_WORKSPACE/kernel_workspace/bootimg_tmp/boot-source-kernelsu.img" >> $GITHUB_ENV
         fi
-        
+    - name: Setup lxc
+      run: |
+        cd $GITHUB_WORKSPACE/kernel_workspace
+        git clone https://github.com/lengxiaohua123/gki-lxc -b lengxiaohua123-patch-2
+        # Apply patches and configuration files
+        cp ./gki-lxc/gki_defconfig ./android-kernel/arch/arm64/configs/gki_defconfig
+        cd ./android-kernel
+        git apply ../gki-lxc/*.patch
     
     - name: Setup KernelSU
       if: env.ENABLE_KERNELSU == 'true'
